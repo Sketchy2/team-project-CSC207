@@ -19,7 +19,7 @@ We set shared expectations for how we will collaborate throughout CSC207. This p
     - Actively listen; avoid interruptions; invite quieter voices.
     - Keep language professional and kind; assume good intent.
     - Give/receive feedback specifically and respectfully.
-    - Summarize decisions in writing (Discord) after discussions.
+    - Summarize decisions in writing after discussions.
 
 ### Work Quality & Collaboration
 - Contribute **reliably and proportionally** to scope.
@@ -31,7 +31,7 @@ We set shared expectations for how we will collaborate throughout CSC207. This p
 ### Meetings
 - **Cadence:** At least once per week during active milestones.
 - **Preparation:** Come with updates, blockers, and next steps.
-- **Notes:** Record decisions, action items, and owners in Discord.
+- **Notes:** Record decisions, action items, and owners in Instagram.
 
 ---
 
