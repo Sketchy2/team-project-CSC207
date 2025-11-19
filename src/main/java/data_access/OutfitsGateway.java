@@ -29,4 +29,9 @@ public interface OutfitsGateway {
      * @return all saved outfits
      */
     List<Outfit> getAll();
+
+    /**
+     * Delete an outfit that matches the given identifiers.
+     */
+    void delete(String name, String weatherProfile, String location);
 }
