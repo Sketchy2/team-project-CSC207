@@ -4,12 +4,12 @@ import data_access.FileFavoriteLocationsGateway;
 import interface_adapters.save_favorite_loc.FavoriteLocationsViewModel;
 import interface_adapters.save_favorite_loc.FavoriteLocationsController;
 import interface_adapters.save_favorite_loc.SaveFavoriteLocationPresenter;
-import use_case.save_favorite.SaveFavoriteLocationInteractor;
-import use_case.save_favorite.SaveFavoriteLocationInputBoundary;
-import use_case.delete_favorite.DeleteFavoriteLocationInteractor;
-import use_case.delete_favorite.DeleteFavoriteLocationInputBoundary;
-import use_case.delete_favorite.DeleteFavoriteLocationOutputData;
-import use_case.delete_favorite.DeleteFavoriteLocationOutputBoundary;
+import use_case.delete.DeleteFavoriteLocationInputBoundary;
+import use_case.delete.DeleteFavoriteLocationInteractor;
+import use_case.delete.DeleteFavoriteLocationOutputBoundary;
+import use_case.delete.DeleteFavoriteLocationOutputData;
+import use_case.save.SaveFavoriteLocationInputBoundary;
+import use_case.save.SaveFavoriteLocationInteractor;
 
 public class FavoriteLocationsDemo {
 

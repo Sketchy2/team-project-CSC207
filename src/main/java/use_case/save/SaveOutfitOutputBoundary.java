@@ -1,4 +1,4 @@
-package use_case;
+package use_case.save;
 
 /**
  * Output Boundary (Presenter API) for Save Outfit.

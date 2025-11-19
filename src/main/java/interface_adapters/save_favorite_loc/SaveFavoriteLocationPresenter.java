@@ -1,7 +1,7 @@
 package interface_adapters.save_favorite_loc;
 
-import use_case.save_favorite.SaveFavoriteLocationOutputBoundary;
-import use_case.save_favorite.SaveFavoriteLocationOutputData;
+import use_case.save.SaveFavoriteLocationOutputBoundary;
+import use_case.save.SaveFavoriteLocationOutputData;
 
 public class SaveFavoriteLocationPresenter implements SaveFavoriteLocationOutputBoundary{
 

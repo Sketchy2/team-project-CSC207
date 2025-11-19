@@ -1,4 +1,4 @@
-package use_case;
+package use_case.save;
 
 /**
  * Input Boundary (Interactor API) for the Save Outfit use case.

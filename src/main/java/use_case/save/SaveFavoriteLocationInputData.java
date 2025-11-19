@@ -1,9 +1,9 @@
-package use_case.delete_favorite;
+package use_case.save;
 
-public class DeleteFavoriteLocationInputData {
+public class SaveFavoriteLocationInputData {
     private final String cityName;
 
-    public DeleteFavoriteLocationInputData(String cityName) {
+    public SaveFavoriteLocationInputData(String cityName) {
         this.cityName = cityName;
     }
     public String getCityName() {

@@ -1,9 +1,9 @@
 package interface_adapters.save_favorite_loc;
 
-import use_case.save_favorite.SaveFavoriteLocationInputBoundary;
-import use_case.save_favorite.SaveFavoriteLocationInputData;
-import use_case.delete_favorite.DeleteFavoriteLocationInputBoundary;
-import use_case.delete_favorite.DeleteFavoriteLocationInputData;
+import use_case.delete.DeleteFavoriteLocationInputBoundary;
+import use_case.delete.DeleteFavoriteLocationInputData;
+import use_case.save.SaveFavoriteLocationInputBoundary;
+import use_case.save.SaveFavoriteLocationInputData;
 
 public class FavoriteLocationsController {
     private final SaveFavoriteLocationInputBoundary saveInteractor;

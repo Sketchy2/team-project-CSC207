@@ -1,7 +1,7 @@
 package interface_adapters;
 
-import use_case.SaveOutfitOutputBoundary;
-import use_case.SaveOutfitOutputData;
+import use_case.save.SaveOutfitOutputBoundary;
+import use_case.save.SaveOutfitOutputData;
 
 /**
  * Presenter converts raw Output Data → user-friendly ViewModel.

@@ -1,10 +1,10 @@
 package interface_adapters;
 
-import use_case.SaveOutfitInputBoundary;
-import use_case.SaveOutfitInputData;
-
 import java.util.Arrays;
 import java.util.List;
+
+import use_case.save.SaveOutfitInputBoundary;
+import use_case.save.SaveOutfitInputData;
 
 /**
  * Converts UI input → Interactor data.

@@ -1,4 +1,4 @@
-package use_case.delete_favorite;
+package use_case.delete;
 
 import java.util.List;
 
