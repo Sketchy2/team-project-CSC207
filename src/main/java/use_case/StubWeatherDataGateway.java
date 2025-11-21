@@ -1,6 +1,5 @@
 package use_case;
 
-
 import entities.Location;
 import entities.WeatherData;
 
@@ -18,5 +17,5 @@ public class StubWeatherDataGateway implements WeatherDataGateway {
                 true        // isRaining
         );
     }
-
 }
+
