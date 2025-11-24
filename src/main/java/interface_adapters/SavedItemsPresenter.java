@@ -13,10 +13,20 @@ public class SavedItemsPresenter implements ViewSavedItemsOutputBoundary, Delete
 
     private final SavedItemsViewModel viewModel;
 
+    /**
+     * Creates a presenter for updating the saved items view model.
+     *
+     * @param viewModel the view model to update
+     */
     public SavedItemsPresenter(SavedItemsViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
+    /**
+     * Presents the saved items retrieved successfully.
+     *
+     * @param data output data containing saved outfits and locations
+     */
     @Override
     public void prepareSuccessView(ViewSavedItemsOutputData data) {
         viewModel.setOutfits(data.getOutfits());
@@ -25,6 +35,11 @@ public class SavedItemsPresenter implements ViewSavedItemsOutputBoundary, Delete
         viewModel.setError(null);
     }
 
+    /**
+     * Presents an error when saved items cannot be retrieved.
+     *
+     * @param errorMessage the error message
+     */
     @Override
     public void prepareFailView(String errorMessage) {
         viewModel.setOutfits(List.of());
@@ -32,7 +47,11 @@ public class SavedItemsPresenter implements ViewSavedItemsOutputBoundary, Delete
         viewModel.setError(errorMessage);
     }
 
-    // For Delete Outfit feauture
+    /**
+     * Presents the updated list of outfits after a successful delete operation.
+     *
+     * @param data output data containing updated outfits and success message
+     */
     @Override
     public void prepareSuccessView(DeleteOutfitOutputData data) {
         viewModel.setOutfits(data.getOutfits());
