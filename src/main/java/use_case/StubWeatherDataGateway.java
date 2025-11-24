@@ -18,3 +18,4 @@ public class StubWeatherDataGateway implements WeatherDataGateway {
         );
     }
 }
+
