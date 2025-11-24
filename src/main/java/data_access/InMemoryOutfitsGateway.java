@@ -41,5 +41,15 @@ public class InMemoryOutfitsGateway implements OutfitsGateway {
     public List<Outfit> getAll() {
         return new ArrayList<>(outfits);
     }
+
+    @Override
+    public void delete(String name, String weatherProfile, String location) {
+        outfits.removeIf(o ->
+                o.getName().equals(name) &&
+                        o.getWeatherProfile().equals(weatherProfile) &&
+                        o.getLocation().equals(location)
+        );
+    }
+
 }
 

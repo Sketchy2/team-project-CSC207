@@ -6,6 +6,7 @@ import interface_adapters.SavedItemsController;
 import interface_adapters.SavedItemsViewModel;
 import interface_adapters.SaveOutfitController;
 import interface_adapters.SaveOutfitViewModel;
+import interface_adapters.DeleteOutfitController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +19,7 @@ public class SavedItemsView extends JPanel {
     public SavedItemsView(SavedItemsController controller,
                           EditFavoriteLocationController editLocationController,
                           SaveOutfitController saveOutfitController,
+                          DeleteOutfitController deleteOutfitController,
                           SavedItemsViewModel savedItemsViewModel,
                           SaveOutfitViewModel saveOutfitViewModel) {
 
@@ -94,6 +96,7 @@ public class SavedItemsView extends JPanel {
                 return;
             }
 
+
             // Get the actual Outfit from the view model
             Outfit original = savedItemsViewModel.getOutfits().get(index);
 
@@ -167,10 +170,77 @@ public class SavedItemsView extends JPanel {
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
+        // --- NEW Delete button ---
+        JButton deleteOutfitBtn = new JButton("Delete selected outfit");
+        deleteOutfitBtn.addActionListener(e -> {
+            int index = outfitsList.getSelectedIndex();
+            if (index < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select an outfit to delete.",
+                        "No selection",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Outfit toDelete = savedItemsViewModel.getOutfits().get(index);
+
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Delete outfit: " + toDelete.getName() + "?",
+                    "Confirm delete",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (confirm != JOptionPane.OK_OPTION) return;
+
+            // call delete use case
+            deleteOutfitController.deleteOutfit(
+                    toDelete.getName(),
+                    toDelete.getWeatherProfile(),
+                    toDelete.getLocation()
+            );
+
+            if (!savedItemsViewModel.getError().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        savedItemsViewModel.getError(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // refresh data after deletion
+            controller.loadSavedItems();
+
+            outfitsModel.clear();
+            for (Outfit o : savedItemsViewModel.getOutfits()) {
+                outfitsModel.addElement(
+                        o.getName() + " | " +
+                                o.getWeatherProfile() + " | " +
+                                o.getLocation()
+                );
+            }
+
+            favoritesModel.clear();
+            for (String city : savedItemsViewModel.getFavoriteLocations()) {
+                favoritesModel.addElement(city);
+            }
+
+            JOptionPane.showMessageDialog(this,
+                    "Outfit deleted.",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
+
+
         JPanel outfitsPanel = new JPanel(new BorderLayout());
         outfitsPanel.add(new JLabel("Saved Outfits:"), BorderLayout.NORTH);
         outfitsPanel.add(outfitsScroll, BorderLayout.CENTER);
-        outfitsPanel.add(editOutfitBtn, BorderLayout.SOUTH);
+        JPanel outfitButtons = new JPanel();
+        outfitButtons.add(editOutfitBtn);
+        outfitButtons.add(deleteOutfitBtn);
+
+        outfitsPanel.add(outfitButtons, BorderLayout.SOUTH);
+
 
         // ---------- Output text area for extra info ----------
 
