@@ -11,7 +11,7 @@ import use_case.delete.DeleteFavoriteLocationOutputData;
 import use_case.save.SaveFavoriteLocationInputBoundary;
 import use_case.save.SaveFavoriteLocationInteractor;
 
-public class FavoriteLocationsDemo {
+public class FavoriteLocationsTestCases {
 
     public static void main(String[] args) {
 
