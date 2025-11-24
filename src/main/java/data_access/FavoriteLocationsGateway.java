@@ -6,6 +6,8 @@ public interface FavoriteLocationsGateway {
     /**Returns true if this city is already saved as a favorite.*/
     boolean existsByName(String cityName);
 
+    void save(String cityName);
+
     /**
      * Tries to add a favorite.
      * @return true if saved successfully, false if storage error.
