@@ -135,7 +135,6 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         }
 
         Current c = response.current;
-
         double temperature = c.temperature;
         double feelsLike = c.apparentTemperature;
         double humidity = c.relativeHumidity;
