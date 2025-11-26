@@ -4,7 +4,11 @@ import java.util.ArrayList;
 public class WeeklyData {
     private ArrayList<DailyData> weeklyForecast;
 
-    public ArrayList<DailyData> getWeek() {
+    public WeeklyData() {
+        this.weeklyForecast = new ArrayList<>();
+    }
+
+    public ArrayList<DailyData> getWeeklyForecast() {
         return weeklyForecast;
     }
 

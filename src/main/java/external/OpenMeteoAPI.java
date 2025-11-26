@@ -162,21 +162,20 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         String url = WEATHER_BASE
                 + "?latitude=" + location.getLatitude()
                 + "&longitude=" + location.getLongitude()
-                + "daily=temperature_2m_min,temperature_2m_max,wind_speed_10m_max"
+                + "&daily=temperature_2m_min,temperature_2m_max,wind_speed_10m_max,"
                 + "precipitation_sum&timezone=auto";
 
         String body = sendGet(url);
         WeatherResponse response = gson.fromJson(body, WeatherResponse.class);
         WeeklyData weeklyData = new WeeklyData();
         List<String> times = response.daily.time;
-        List<Integer> codes = response.daily.weatherCode;
         List<Double> maxes = response.daily.temperatureMax;
         List<Double> mins = response.daily.temperatureMin;
         List<Double> precipitation = response.daily.precipitationSum;
         List<Double> winds = response.daily.windSpeed;
         for (int i = 0; i < times.size(); i++) {
-            String condition = describeWeatherCode(codes.get(i));
-            DailyData dailyData = new DailyData(times.get(i), mins.get(i), maxes.get(i), condition, precipitation.get(i)>0, winds.get(i));
+            String cond = describeWeatherCode(100);
+            DailyData dailyData = new DailyData(times.get(i), mins.get(i), maxes.get(i), cond,precipitation.get(i)>0, winds.get(i));
             weeklyData.add(dailyData);
         }
         return weeklyData;
@@ -260,9 +259,6 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
     private static class Daily {
         @SerializedName("time")
         public List<String> time;
-
-        @SerializedName("weather_code")
-        public List<Integer> weatherCode;
 
         @SerializedName("temperature_2m_max")
         public List<Double> temperatureMax;
