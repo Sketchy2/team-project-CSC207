@@ -14,8 +14,8 @@ import use_case.GetWeatherInputBoundary;
 import use_case.GetWeatherInteractor;
 import use_case.WeatherDataGateway;
 
-import use_case.save_favorite.SaveFavoriteLocationInteractor;
-import use_case.delete_favorite.DeleteFavoriteLocationInteractor;
+import use_case.save.SaveFavoriteLocationInteractor;
+import use_case.delete.DeleteFavoriteLocationInteractor;
 
 import javax.swing.*;
 

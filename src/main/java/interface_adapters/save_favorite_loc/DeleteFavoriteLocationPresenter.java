@@ -1,7 +1,7 @@
 package interface_adapters.save_favorite_loc;
 
-import use_case.delete_favorite.DeleteFavoriteLocationOutputBoundary;
-import use_case.delete_favorite.DeleteFavoriteLocationOutputData;
+import use_case.delete.DeleteFavoriteLocationOutputBoundary;
+import use_case.delete.DeleteFavoriteLocationOutputData;
 
 public class DeleteFavoriteLocationPresenter implements DeleteFavoriteLocationOutputBoundary {
 
@@ -19,6 +19,6 @@ public class DeleteFavoriteLocationPresenter implements DeleteFavoriteLocationOu
 
     @Override
     public void prepareFailView(String errorMessage) {
-        viewModel.setMessage("[Delete Fail, please try again, Error: ]" + errorMessage);
+        viewModel.setMessage("[Delete Fail] " + errorMessage);
     }
 }
