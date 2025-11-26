@@ -1,7 +1,19 @@
 package demo;
 
 import data_access.FileFavoriteLocationsGateway;
+import data_access.OpenMeteoWeatherDataGateway;
+import external.OpenMeteoAPI;
+import external.WeatherService;
+
 import interface_adapters.save_favorite_loc.*;
+import interface_adapters.weather.GetWeatherController;
+import interface_adapters.weather.WeatherPresenter;
+import interface_adapters.weather.WeatherViewModel;
+
+import use_case.GetWeatherInputBoundary;
+import use_case.GetWeatherInteractor;
+import use_case.WeatherDataGateway;
+
 import use_case.save_favorite.SaveFavoriteLocationInteractor;
 import use_case.delete_favorite.DeleteFavoriteLocationInteractor;
 
@@ -15,13 +27,13 @@ public class FavoriteLocationsPanelDemo {
                 new FileFavoriteLocationsGateway("favorites_demo.txt");
 
         // 2. ViewModel
-        FavoriteLocationsViewModel viewModel = new FavoriteLocationsViewModel();
+        FavoriteLocationsViewModel favoritesViewModel = new FavoriteLocationsViewModel();
 
         // 3. Presenter
         SaveFavoriteLocationPresenter savePresenter =
-                new SaveFavoriteLocationPresenter(viewModel);
+                new SaveFavoriteLocationPresenter(favoritesViewModel);
         DeleteFavoriteLocationPresenter deletePresenter =
-                new DeleteFavoriteLocationPresenter(viewModel);
+                new DeleteFavoriteLocationPresenter(favoritesViewModel);
 
         // 4. Interactors
         SaveFavoriteLocationInteractor saveInteractor =
@@ -29,18 +41,34 @@ public class FavoriteLocationsPanelDemo {
         DeleteFavoriteLocationInteractor deleteInteractor =
                 new DeleteFavoriteLocationInteractor(gateway, deletePresenter);
 
-        // 5. Combined controller
-        FavoriteLocationsController controller =
+        // 5. Favorites controller
+        FavoriteLocationsController favoritesController =
                 new FavoriteLocationsController(saveInteractor, deleteInteractor);
 
-        // 6. Initial favorites into ViewModel
-        viewModel.setFavorites(gateway.getFavorites());
+        // 6. Weather wiring (UC1)
+        WeatherService service = new OpenMeteoAPI();
+        WeatherDataGateway dataGateway = new OpenMeteoWeatherDataGateway(service);
 
-        // 7. Panel
+        WeatherViewModel weatherViewModel = new WeatherViewModel();
+        WeatherPresenter weatherPresenter = new WeatherPresenter(weatherViewModel);
+
+        GetWeatherInputBoundary getWeatherInteractor =
+                new GetWeatherInteractor(dataGateway, weatherPresenter);
+        GetWeatherController weatherController = new GetWeatherController(getWeatherInteractor);
+
+        //7. Initial favorites into ViewModel
+        favoritesViewModel.setFavorites(gateway.getFavorites());
+
+        // 8. Panel
         FavoriteLocationsPanel panel =
-                new FavoriteLocationsPanel(viewModel, controller);
+                new FavoriteLocationsPanel(
+                        favoritesViewModel,
+                        favoritesController,
+                        weatherController,
+                        weatherViewModel);
 
-        // 8. Show in a frame
+
+        // 8. Final frame
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Favorite Locations Demo");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

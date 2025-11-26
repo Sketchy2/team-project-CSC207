@@ -14,7 +14,8 @@ public class SaveFavoriteLocationInteractor implements SaveFavoriteLocationInput
 
     /**
      * Creates a new interactor for saving favorite locations.
-     * @param gateway the data access interface used to store and retrieve favorite locations
+     *
+     * @param gateway   the data access interface used to store and retrieve favorite locations
      * @param presenter the presenter that formats the output of the view
      */
     public SaveFavoriteLocationInteractor(FavoriteLocationsGateway gateway,
@@ -25,10 +26,12 @@ public class SaveFavoriteLocationInteractor implements SaveFavoriteLocationInput
 
     /**
      * Execute the save-favorite-location use case
+     *
      * @param inputData the input data containing the name to delete
      */
     @Override
     public void execute(SaveFavoriteLocationInputData inputData) {
+
         String cityName = inputData.getCityName();
 
         //Basic validation: null or empty
@@ -39,34 +42,36 @@ public class SaveFavoriteLocationInteractor implements SaveFavoriteLocationInput
         }
         cityName = trimmed;
 
-        //Alternative - duplicate
+        //Storage error
         if (gateway.existsByName(cityName)) {
             boolean alreadyFavorite = true;
-            SaveFavoriteLocationOutputData outputData = new SaveFavoriteLocationOutputData(
-                    cityName,
-                    alreadyFavorite,
-                    gateway.getFavorites()
-            );
+            SaveFavoriteLocationOutputData outputData =
+                    new SaveFavoriteLocationOutputData(
+                            cityName,
+                            alreadyFavorite,
+                            gateway.getFavorites()
+                    );
             presenter.prepareSuccessView(outputData);
             return;
         }
 
+        // Try to save
         boolean success = gateway.saveFavorites(cityName);
 
-        //Storage error
+        // Storage error
         if (!success) {
             presenter.prepareFailView("Unable to save location, please try again.");
             return;
         }
 
-        //Successfully saved
-        boolean isDuplicate = false;
-        SaveFavoriteLocationOutputData outputData = new SaveFavoriteLocationOutputData(
-                cityName,
-                isDuplicate,
-                gateway.getFavorites()
-        );
+        // Successfully saved
+        boolean alreadyFavorite = false;
+        SaveFavoriteLocationOutputData outputData =
+                new SaveFavoriteLocationOutputData(
+                        cityName,
+                        alreadyFavorite,
+                        gateway.getFavorites()
+                );
         presenter.prepareSuccessView(outputData);
-
     }
 }

@@ -58,19 +58,19 @@ public class FavoriteLocationsTestCases {
         System.out.println("Initial favorites (file): " + gateway.getFavorites());
 
         System.out.println("\nSaving Toronto...");
-        controller.save("Toronto");
+        controller.save("Toronto", "CA", 0.0, 0.0);          // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
 
         System.out.println("\nSaving Toronto again (duplicate)...");
-        controller.save("Toronto");
+        controller.save("Toronto", "CA", 0.0, 0.0);          // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
 
         System.out.println("\nSaving Vancouver...");
-        controller.save("Vancouver");
+        controller.save("Vancouver", "CA", 0.0, 0.0);        // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
@@ -89,14 +89,14 @@ public class FavoriteLocationsTestCases {
 
         // 1. Saving an empty string
         System.out.println("\n[Extra] Saving empty string \"\"...");
-        controller.save("");
+        controller.save("", "CA", 0.0, 0.0);                 // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
 
         // 2. Saving only whitespace
         System.out.println("\n[Extra] Saving only spaces \"   \"...");
-        controller.save("   ");
+        controller.save("   ", "CA", 0.0, 0.0);              // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
@@ -109,7 +109,7 @@ public class FavoriteLocationsTestCases {
 
         // 4. Re-add a city after deletion (Toronto)
         System.out.println("\n[Extra] Re-saving Toronto after it was deleted...");
-        controller.save("Toronto");
+        controller.save("Toronto", "CA", 0.0, 0.0);          // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());

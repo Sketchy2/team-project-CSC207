@@ -3,6 +3,7 @@ package data_access;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import entities.Location;
 
 public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
 
@@ -18,9 +19,12 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
      * Load favorites from text file into a list.
      */
     private void loadFromFile() {
+        favorites.clear();
+
         if (!storageFile.exists()) {
             return;
         }
+
         try (BufferedReader reader = new BufferedReader(new FileReader(storageFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -34,9 +38,11 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
         }
     }
 
-    /** Write the current favorite list back to the file. */
+    /**
+     * Write the current favorites list back to the file.
+     */
     private boolean saveToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(storageFile))){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(storageFile))) {
             for (String city : favorites) {
                 writer.write(city);
                 writer.newLine();
@@ -50,7 +56,9 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
 
     @Override
     public boolean existsByName(String cityName) {
-        return favorites.contains(cityName);
+        if (cityName == null) return false;
+        String trimmed = cityName.trim();
+        return favorites.contains(trimmed);
     }
 
     @Override
@@ -60,19 +68,20 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
 
     @Override
     public boolean saveFavorites(String cityName) {
-        if (!favorites.contains(cityName)) {
-            favorites.add(cityName);
+        if (cityName == null) return false;
+        String trimmed = cityName.trim();
+        if (trimmed.isEmpty()) return false;
+
+        if (!favorites.contains(trimmed)) {
+            favorites.add(trimmed);
             boolean success = saveToFile();
             if (!success) {
-                favorites.remove(cityName);
+                // roll back if file save failed
+                favorites.remove(trimmed);
                 return false;
             }
         }
         return true;
-    }
-    @Override
-    public List<String> getFavorites() {
-        return new ArrayList<>(favorites);
     }
 
     @Override
@@ -80,7 +89,7 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
         if (cityName == null) {
             return;
         }
-        String trimmed =  cityName.trim();
+        String trimmed = cityName.trim();
         if (trimmed.isEmpty()) {
             return;
         }
@@ -88,5 +97,10 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
         if (favorites.remove(trimmed)) {
             saveToFile();
         }
+    }
+
+    @Override
+    public List<String> getFavorites() {
+        return new ArrayList<>(favorites);
     }
 }
