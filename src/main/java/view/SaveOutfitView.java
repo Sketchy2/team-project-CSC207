@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * Swing UI for saving outfits.
  */
-public class SaveOutgitfitView extends JPanel {
+public class SaveOutfitView extends JPanel {
 
     public SaveOutfitView(SaveOutfitController controller,
                           SaveOutfitViewModel viewModel) {
