@@ -2,6 +2,7 @@ package use_case;
 
 import entities.Location;
 import entities.WeatherData;
+import entities.WeeklyData;
 
 public class GetWeatherInteractor implements GetWeatherInputBoundary {
 
@@ -25,7 +26,11 @@ public class GetWeatherInteractor implements GetWeatherInputBoundary {
         );
 
         try {
+            // Fetch current weather
             WeatherData data = weatherGateway.fetch(location);
+
+            // Fetch weekly forecast (UC4 integration)
+            WeeklyData weeklyData = weatherGateway.fetchWeekly(location);
 
             GetWeatherOutputData output = new GetWeatherOutputData(
                     inputData.getName(),               // cityName
@@ -36,6 +41,7 @@ public class GetWeatherInteractor implements GetWeatherInputBoundary {
                     data.getWindSpeed(),               // windSpeed
                     data.getCondition(),               // description
                     data.isRaining(),                  // isRaining
+                    weeklyData,                        // weekly forecast
                     ""                                 // errorMessage = none
             );
 
@@ -53,6 +59,7 @@ public class GetWeatherInteractor implements GetWeatherInputBoundary {
                     0,
                     "",
                     false,
+                    null,
                     "Could not find weather for that city."
             );
 

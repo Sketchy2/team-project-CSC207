@@ -2,6 +2,7 @@ package data_access;
 
 import entities.Location;
 import entities.WeatherData;
+import entities.WeeklyData;
 import external.WeatherService;
 import use_case.WeatherDataGateway;
 
@@ -21,5 +22,11 @@ public class OpenMeteoWeatherDataGateway implements WeatherDataGateway {
 
         Location resolved = weatherService.searchLocation(location.getName());
         return weatherService.getWeather(resolved);
+    }
+
+    @Override
+    public WeeklyData fetchWeekly(Location location) {
+        Location resolved = weatherService.searchLocation(location.getName());
+        return weatherService.getWeeklyData(resolved);
     }
 }

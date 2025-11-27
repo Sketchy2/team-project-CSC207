@@ -1,5 +1,7 @@
 package use_case;
 
+import entities.WeeklyData;
+
 public class GetWeatherOutputData {
     private final String cityName;
     private final String countryCode;
@@ -9,6 +11,7 @@ public class GetWeatherOutputData {
     private final double windSpeed;
     private final String description;
     private final boolean isRaining;
+    private final WeeklyData weeklyData; // Added field
     private final String errorMessage;  // "" if success, message if error
 
     public GetWeatherOutputData(String cityName,
@@ -19,6 +22,7 @@ public class GetWeatherOutputData {
                                 double windSpeed,
                                 String description,
                                 boolean isRaining,
+                                WeeklyData weeklyData,
                                 String errorMessage) {
         this.cityName = cityName;
         this.countryCode = countryCode;
@@ -28,6 +32,7 @@ public class GetWeatherOutputData {
         this.windSpeed = windSpeed;
         this.description = description;
         this.isRaining = isRaining;
+        this.weeklyData = weeklyData;
         this.errorMessage = errorMessage;
     }
 
@@ -39,7 +44,6 @@ public class GetWeatherOutputData {
     public double getWindSpeed() { return windSpeed; }
     public String getDescription() { return description; }
     public boolean isRaining() { return isRaining; }
+    public WeeklyData getWeeklyData() { return weeklyData; }
     public String getErrorMessage() { return errorMessage; }
 }
-
-

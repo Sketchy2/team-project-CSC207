@@ -189,7 +189,8 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         return getWeather(location);
     }
 
-    public WeeklyData weeklyFetch(Location location) {
+    @Override
+    public WeeklyData fetchWeekly(Location location) {
         return getWeeklyData(location);
     }
 
@@ -273,6 +274,3 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         public List<Double> windSpeed;
     }
 }
-
-
-

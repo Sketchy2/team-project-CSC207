@@ -1,7 +1,11 @@
 package interface_adapters.weather;
 
+import entities.DailyData;
+import entities.WeeklyData;
 import use_case.GetWeatherOutputBoundary;
 import use_case.GetWeatherOutputData;
+
+import java.util.ArrayList;
 
 public class WeatherPresenter implements GetWeatherOutputBoundary {
 
@@ -34,6 +38,22 @@ public class WeatherPresenter implements GetWeatherOutputBoundary {
         state.windSpeedText = outputData.getWindSpeed() + " m/s";
         state.descriptionText = outputData.getDescription();
 
+        // Populate raw data
+        state.temperature = outputData.getTemperature();
+        state.isRaining = outputData.isRaining();
+        state.windSpeed = outputData.getWindSpeed();
+
+        // Populate Weekly Forecast
+        state.weeklyForecast = new ArrayList<>();
+        WeeklyData wd = outputData.getWeeklyData();
+        if (wd != null && wd.getWeeklyForecast() != null) {
+            for (DailyData d : wd.getWeeklyForecast()) {
+                String entry = String.format("%s: Min %.1f°C | Max %.1f°C | %s",
+                        d.getDate(), d.getMinTemp(), d.getMaxTemp(), d.getCondition());
+                state.weeklyForecast.add(entry);
+            }
+        }
+
         // 4) Error handling – pass through from OutputData
         state.errorMessage = outputData.getErrorMessage();
 
@@ -44,6 +64,7 @@ public class WeatherPresenter implements GetWeatherOutputBoundary {
             state.humidityText = "";
             state.windSpeedText = "";
             state.descriptionText = "";
+            state.weeklyForecast.clear();
         }
 
         viewModel.setState(state);
@@ -66,5 +87,3 @@ public class WeatherPresenter implements GetWeatherOutputBoundary {
         return sb.toString().trim();
     }
 }
-
-
