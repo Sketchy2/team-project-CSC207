@@ -3,16 +3,31 @@ package use_case.delete;
 import data_access.FavoriteLocationsGateway;
 import java.util.List;
 
+/** Interactor for deleting a favorite location.
+ * <p>
+ * This use case handles validation and check whether location exists,
+ * performs deletion through {@link FavoriteLocationsGateway},
+ * prepares either a success or failure view through the presenter.
+ */
 public class DeleteFavoriteLocationInteractor implements DeleteFavoriteLocationInputBoundary {
     private final FavoriteLocationsGateway gateway;
     private final DeleteFavoriteLocationOutputBoundary presenter;
 
+    /**
+     * Creates a new interactor for deleting favorite locations.
+     * @param gateway the data access interface for favorite locations
+     * @param presenter the presenter that formats the output of the view
+     */
     public DeleteFavoriteLocationInteractor(FavoriteLocationsGateway gateway,
                                             DeleteFavoriteLocationOutputBoundary presenter) {
         this.gateway = gateway;
         this.presenter = presenter;
     }
 
+    /**
+     * Execute the delete-favorite-location use case
+     * @param inputData the input data containing the name to delete
+     */
     @Override
     public void execute(DeleteFavoriteLocationInputData inputData) {
         String rawCityName = inputData.getCityName();

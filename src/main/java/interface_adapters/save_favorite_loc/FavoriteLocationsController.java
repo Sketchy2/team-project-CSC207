@@ -15,8 +15,16 @@ public class FavoriteLocationsController {
         this.deleteInteractor = deleteInteractor;
     }
 
-    public void save(String cityName){
-        SaveFavoriteLocationInputData inputData = new SaveFavoriteLocationInputData(cityName);
+    public void save(String cityName,
+                     String countryCode,
+                     double latitude,
+                     double longitude){
+
+        SaveFavoriteLocationInputData inputData = new SaveFavoriteLocationInputData(
+                cityName,
+                countryCode,
+                latitude,
+                longitude);
         saveInteractor.execute(inputData);
     }
 
