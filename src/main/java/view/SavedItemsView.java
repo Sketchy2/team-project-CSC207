@@ -10,11 +10,19 @@ import interface_adapters.DeleteOutfitController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Swing UI for viewing and editing saved outfits and favourite locations.
  */
-public class SavedItemsView extends JPanel {
+public class SavedItemsView extends JPanel implements PropertyChangeListener {
+
+    private final DefaultListModel<String> favoritesModel = new DefaultListModel<>();
+    private final DefaultListModel<Outfit> outfitsModel = new DefaultListModel<>();
+    private final JTextArea output = new JTextArea(10, 50);
+
+    private final SavedItemsViewModel savedItemsViewModel;
 
     public SavedItemsView(SavedItemsController controller,
                           EditFavoriteLocationController editLocationController,
@@ -23,11 +31,13 @@ public class SavedItemsView extends JPanel {
                           SavedItemsViewModel savedItemsViewModel,
                           SaveOutfitViewModel saveOutfitViewModel) {
 
+        this.savedItemsViewModel = savedItemsViewModel;
+        this.savedItemsViewModel.addPropertyChangeListener(this);
+
         setLayout(new BorderLayout());
 
         // ---------- Favourite locations list + rename ----------
 
-        DefaultListModel<String> favoritesModel = new DefaultListModel<>();
         JList<String> favoritesList = new JList<>(favoritesModel);
         JScrollPane favoritesScroll = new JScrollPane(favoritesList);
 
@@ -62,12 +72,6 @@ public class SavedItemsView extends JPanel {
                 return;
             }
 
-            // refresh favourites list from view model
-            favoritesModel.clear();
-            for (String city : savedItemsViewModel.getFavoriteLocations()) {
-                favoritesModel.addElement(city);
-            }
-
             JOptionPane.showMessageDialog(this,
                     savedItemsViewModel.getMessage(),
                     "Success",
@@ -81,24 +85,32 @@ public class SavedItemsView extends JPanel {
 
         // ---------- Outfits list + edit ----------
 
-        DefaultListModel<String> outfitsModel = new DefaultListModel<>();
-        JList<String> outfitsList = new JList<>(outfitsModel);
+        JList<Outfit> outfitsList = new JList<>(outfitsModel);
+        // Custom renderer to display outfit details
+        outfitsList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Outfit) {
+                    Outfit o = (Outfit) value;
+                    setText(o.getName() + " | " + o.getWeatherProfile() + " | " + o.getLocation());
+                }
+                return this;
+            }
+        });
+
         JScrollPane outfitsScroll = new JScrollPane(outfitsList);
 
         JButton editOutfitBtn = new JButton("Edit selected outfit");
         editOutfitBtn.addActionListener(e -> {
-            int index = outfitsList.getSelectedIndex();
-            if (index < 0) {
+            Outfit original = outfitsList.getSelectedValue();
+            if (original == null) {
                 JOptionPane.showMessageDialog(this,
                         "Please select an outfit to edit.",
                         "No selection",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
-
-            // Get the actual Outfit from the view model
-            Outfit original = savedItemsViewModel.getOutfits().get(index);
 
             // Show a simple edit dialog with text fields
             JTextField nameField = new JTextField(original.getName(), 20);
@@ -137,8 +149,7 @@ public class SavedItemsView extends JPanel {
                     true  // overwrite existing
             );
 
-            // Check SaveOutfitViewModel for any error
-            if (!saveOutfitViewModel.getError().isEmpty()) {
+            if (saveOutfitViewModel.getError() != null && !saveOutfitViewModel.getError().isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                         saveOutfitViewModel.getError(),
                         "Error",
@@ -149,21 +160,6 @@ public class SavedItemsView extends JPanel {
             // If save succeeded, refresh saved items from UC6
             controller.loadSavedItems();
 
-            // Update lists from SavedItemsViewModel
-            outfitsModel.clear();
-            for (Outfit o : savedItemsViewModel.getOutfits()) {
-                outfitsModel.addElement(
-                        o.getName() + " | " +
-                        o.getWeatherProfile() + " | " +
-                        o.getLocation()
-                );
-            }
-
-            favoritesModel.clear();
-            for (String city : savedItemsViewModel.getFavoriteLocations()) {
-                favoritesModel.addElement(city);
-            }
-
             JOptionPane.showMessageDialog(this,
                     "Outfit updated successfully.",
                     "Success",
@@ -173,16 +169,14 @@ public class SavedItemsView extends JPanel {
         // --- NEW Delete button ---
         JButton deleteOutfitBtn = new JButton("Delete selected outfit");
         deleteOutfitBtn.addActionListener(e -> {
-            int index = outfitsList.getSelectedIndex();
-            if (index < 0) {
+            Outfit toDelete = outfitsList.getSelectedValue();
+            if (toDelete == null) {
                 JOptionPane.showMessageDialog(this,
                         "Please select an outfit to delete.",
                         "No selection",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
-            Outfit toDelete = savedItemsViewModel.getOutfits().get(index);
 
             int confirm = JOptionPane.showConfirmDialog(
                     this,
@@ -211,20 +205,6 @@ public class SavedItemsView extends JPanel {
             // refresh data after deletion
             controller.loadSavedItems();
 
-            outfitsModel.clear();
-            for (Outfit o : savedItemsViewModel.getOutfits()) {
-                outfitsModel.addElement(
-                        o.getName() + " | " +
-                                o.getWeatherProfile() + " | " +
-                                o.getLocation()
-                );
-            }
-
-            favoritesModel.clear();
-            for (String city : savedItemsViewModel.getFavoriteLocations()) {
-                favoritesModel.addElement(city);
-            }
-
             JOptionPane.showMessageDialog(this,
                     "Outfit deleted.",
                     "Success",
@@ -244,7 +224,6 @@ public class SavedItemsView extends JPanel {
 
         // ---------- Output text area for extra info ----------
 
-        JTextArea output = new JTextArea(10, 50);
         output.setEditable(false);
         JScrollPane outputScroll = new JScrollPane(output);
 
@@ -253,30 +232,6 @@ public class SavedItemsView extends JPanel {
         JButton refreshBtn = new JButton("Load saved items");
         refreshBtn.addActionListener(e -> {
             controller.loadSavedItems();
-
-            output.setText("");
-            if (!savedItemsViewModel.getError().isEmpty()) {
-                output.setText("Error: " + savedItemsViewModel.getError());
-                return;
-            }
-
-            // update favourites list
-            favoritesModel.clear();
-            for (String city : savedItemsViewModel.getFavoriteLocations()) {
-                favoritesModel.addElement(city);
-            }
-
-            // update outfits list
-            outfitsModel.clear();
-            for (Outfit o : savedItemsViewModel.getOutfits()) {
-                outfitsModel.addElement(
-                        o.getName() + " | " +
-                        o.getWeatherProfile() + " | " +
-                        o.getLocation()
-                );
-            }
-
-            output.append(savedItemsViewModel.getMessage() + "\n");
         });
 
         // ---------- Layout ----------
@@ -288,5 +243,34 @@ public class SavedItemsView extends JPanel {
         add(refreshBtn, BorderLayout.NORTH);
         add(leftPanel, BorderLayout.WEST);
         add(outputScroll, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // Whenever ViewModel updates (outfits, favorites, or message), refresh UI
+
+        // 1. Update Text Area
+        output.setText("");
+        if (!savedItemsViewModel.getError().isEmpty()) {
+            output.setText("Error: " + savedItemsViewModel.getError());
+        } else {
+            output.append(savedItemsViewModel.getMessage() + "\n");
+        }
+
+        // 2. Update Favorites List
+        favoritesModel.clear();
+        if (savedItemsViewModel.getFavoriteLocations() != null) {
+            for (String city : savedItemsViewModel.getFavoriteLocations()) {
+                favoritesModel.addElement(city);
+            }
+        }
+
+        // 3. Update Outfits List
+        outfitsModel.clear();
+        if (savedItemsViewModel.getOutfits() != null) {
+            for (Outfit o : savedItemsViewModel.getOutfits()) {
+                outfitsModel.addElement(o); // Adding Entity directly
+            }
+        }
     }
 }

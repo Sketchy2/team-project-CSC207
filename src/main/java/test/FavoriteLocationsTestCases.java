@@ -11,7 +11,7 @@ import use_case.delete.DeleteFavoriteLocationOutputData;
 import use_case.save.SaveFavoriteLocationInputBoundary;
 import use_case.save.SaveFavoriteLocationInteractor;
 
-public class FavoriteLocationsDemo {
+public class FavoriteLocationsTestCases {
 
     public static void main(String[] args) {
 
@@ -58,19 +58,19 @@ public class FavoriteLocationsDemo {
         System.out.println("Initial favorites (file): " + gateway.getFavorites());
 
         System.out.println("\nSaving Toronto...");
-        controller.save("Toronto");
+        controller.save("Toronto", "CA", 0.0, 0.0);          // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
 
         System.out.println("\nSaving Toronto again (duplicate)...");
-        controller.save("Toronto");
+        controller.save("Toronto", "CA", 0.0, 0.0);          // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
 
         System.out.println("\nSaving Vancouver...");
-        controller.save("Vancouver");
+        controller.save("Vancouver", "CA", 0.0, 0.0);        // CHANGED
         System.out.println("Message: " + viewModel.getMessage());
         System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
         System.out.println("Gateway Favorites:   " + gateway.getFavorites());
@@ -86,5 +86,41 @@ public class FavoriteLocationsDemo {
         System.out.println("\nDeleting empty input...");
         controller.delete("   ");
         System.out.println("After empty delete, Gateway Favorites: " + gateway.getFavorites());
+
+        // 1. Saving an empty string
+        System.out.println("\n[Extra] Saving empty string \"\"...");
+        controller.save("", "CA", 0.0, 0.0);                 // CHANGED
+        System.out.println("Message: " + viewModel.getMessage());
+        System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
+        System.out.println("Gateway Favorites:   " + gateway.getFavorites());
+
+        // 2. Saving only whitespace
+        System.out.println("\n[Extra] Saving only spaces \"   \"...");
+        controller.save("   ", "CA", 0.0, 0.0);              // CHANGED
+        System.out.println("Message: " + viewModel.getMessage());
+        System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
+        System.out.println("Gateway Favorites:   " + gateway.getFavorites());
+
+        // 3. Delete an existing city (Vancouver) to test another successful delete
+        System.out.println("\n[Extra] Deleting existing city Vancouver...");
+        controller.delete("Vancouver");
+        System.out.println("After delete, Gateway Favorites: " + gateway.getFavorites());
+
+
+        // 4. Re-add a city after deletion (Toronto)
+        System.out.println("\n[Extra] Re-saving Toronto after it was deleted...");
+        controller.save("Toronto", "CA", 0.0, 0.0);          // CHANGED
+        System.out.println("Message: " + viewModel.getMessage());
+        System.out.println("ViewModel Favorites: " + viewModel.getFavorites());
+        System.out.println("Gateway Favorites:   " + gateway.getFavorites());
+
+        // 5. Try deleting the same city twice
+        System.out.println("\n[Extra] Deleting Toronto the first time...");
+        controller.delete("Toronto");
+        System.out.println("After first delete, Gateway Favorites: " + gateway.getFavorites());
+
+        System.out.println("\n[Extra] Deleting Toronto again (should fail)...");
+        controller.delete("Toronto");
+        System.out.println("After second delete attempt, Gateway Favorites: " + gateway.getFavorites());
     }
 }

@@ -1,66 +1,115 @@
 package view;
+
 import interface_adapters.RecommendOutfitController;
 import interface_adapters.RecommendationViewModel;
+import interface_adapters.SaveOutfitController;
+import interface_adapters.SaveOutfitViewModel;
+import interface_adapters.weather.WeatherViewModel;
+
 import javax.swing.*;
 import java.awt.*;
 
-
 public class RecommendationPanel extends JPanel {
-    private final JTextField tempField = new JTextField(5);
-    private final JCheckBox rainCheck = new JCheckBox("Raining");
-    private final JTextField windField = new JTextField(5);
-    private final JButton recommendButton = new JButton(" Recommend");
-    private final JTextArea resultArea = new JTextArea(8, 30);
+
+    private final JButton recommendButton = new JButton("Recommend Outfit");
+    private final JButton saveButton = new JButton("Save Outfit");
+    private final JTextArea resultArea = new JTextArea(10, 30);
     private final JLabel errorLabel = new JLabel(" ");
-    private final RecommendOutfitController controller;
-    private final RecommendationViewModel vm;
 
-    public RecommendationPanel(RecommendOutfitController controller,
-                               RecommendationViewModel vm) {
+    private final RecommendOutfitController recommendController;
+    private final RecommendationViewModel recommendationViewModel;
+    private final WeatherViewModel weatherViewModel;
+    private final SaveOutfitController saveOutfitController;
+    private final SaveOutfitViewModel saveOutfitViewModel;
 
-        this.controller = controller;
-        this.vm = vm;
+    public RecommendationPanel(RecommendOutfitController recommendController,
+                               RecommendationViewModel recommendationViewModel,
+                               WeatherViewModel weatherViewModel,
+                               SaveOutfitController saveOutfitController,
+                               SaveOutfitViewModel saveOutfitViewModel) {
+
+        this.recommendController = recommendController;
+        this.recommendationViewModel = recommendationViewModel;
+        this.weatherViewModel = weatherViewModel;
+        this.saveOutfitController = saveOutfitController;
+        this.saveOutfitViewModel = saveOutfitViewModel;
 
         setLayout(new BorderLayout(10, 10));
-        JPanel inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Temperature (°C):"));
-        inputPanel.add(tempField);
-        inputPanel.add(rainCheck);
-        inputPanel.add(new JLabel("Wind (km/h):"));
-        inputPanel.add(windField);
-        inputPanel.add(recommendButton);
-        add(inputPanel, BorderLayout.NORTH);
+        setBorder(BorderFactory.createTitledBorder("Recommendation"));
+
+        JPanel topPanel = new JPanel(new FlowLayout());
+        topPanel.add(recommendButton);
+        topPanel.add(saveButton);
+
+        saveButton.setEnabled(false); // Disabled until recommendation exists
+
+        add(topPanel, BorderLayout.NORTH);
+
+        resultArea.setEditable(false);
+        resultArea.setLineWrap(true);
+        resultArea.setWrapStyleWord(true);
         add(new JScrollPane(resultArea), BorderLayout.CENTER);
+
         add(errorLabel, BorderLayout.SOUTH);
 
-        recommendButton.addActionListener(e -> {
-            try {
-                double temp = Double.parseDouble(tempField.getText());
-                boolean raining = rainCheck.isSelected();
-                double wind = Double.parseDouble(windField.getText());
+        recommendButton.addActionListener(e -> onRecommend());
+        saveButton.addActionListener(e -> onSave());
+    }
 
-                controller.recommend(temp, raining, wind);
-                refreshFromViewModel();
-            } catch (NumberFormatException ex) {
-                errorLabel.setText("Please enter valid numbers.");
-            }
-        });
+    private void onRecommend() {
+        WeatherViewModel.State weatherState = weatherViewModel.getState();
+
+        if (Double.isNaN(weatherState.temperature) || Double.isNaN(weatherState.windSpeed)) {
+            errorLabel.setText("Please get weather data first.");
+            return;
+        }
+
+        recommendController.recommend(
+                weatherState.temperature,
+                weatherState.isRaining,
+                weatherState.windSpeed
+        );
+
+        refreshFromViewModel();
     }
 
     private void refreshFromViewModel() {
-        if (vm.getError() != null) {
-            errorLabel.setText(vm.getError());
+        if (recommendationViewModel.getError() != null) {
+            errorLabel.setText(recommendationViewModel.getError());
             resultArea.setText("");
+            saveButton.setEnabled(false);
             return;
         }
+
         errorLabel.setText("");
         StringBuilder sb = new StringBuilder();
-        sb.append(vm.getTitle()).append("\n\n");
+        sb.append(recommendationViewModel.getTitle()).append("\n\n");
 
-        for (String item : vm.getItems()) {
+        for (String item : recommendationViewModel.getItems()) {
             sb.append("- ").append(item).append("\n");
         }
-        sb.append("\nReason: ").append(vm.getRationale());
+        sb.append("\nReason: ").append(recommendationViewModel.getRationale());
         resultArea.setText(sb.toString());
+
+        saveButton.setEnabled(true);
+    }
+
+    private void onSave() {
+        String name = JOptionPane.showInputDialog(this, "Enter outfit name:");
+        if (name == null || name.trim().isEmpty()) {
+            return;
+        }
+
+        String items = String.join(",", recommendationViewModel.getItems());
+        String profile = recommendationViewModel.getRationale();
+        String location = weatherViewModel.getState().cityName;
+
+        saveOutfitController.save(name, items, profile, location, true);
+
+        if (saveOutfitViewModel.getError() != null && !saveOutfitViewModel.getError().isEmpty()) {
+            JOptionPane.showMessageDialog(this, saveOutfitViewModel.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Outfit saved!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
