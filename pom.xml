@@ -18,12 +18,43 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
                     <source>16</source>
                     <target>16</target>
                 </configuration>
             </plugin>
-        </plugins>
+
+        <!-- === 2. Checkstyle plugin (ADD THIS) === -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.4.0</version>
+
+            <configuration>
+                <!-- Path to your Checkstyle rules -->
+                <configLocation>checkstyle.xml</configLocation>
+
+                <!-- Nice formatted console output -->
+                <consoleOutput>true</consoleOutput>
+
+                <!-- Fail the build if violations occur -->
+                <failsOnError>true</failsOnError>
+
+            </configuration>
+
+            <executions>
+                <execution>
+                    <id>checkstyle-validation</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+    </plugins>
     </build>
 
     <dependencies>
