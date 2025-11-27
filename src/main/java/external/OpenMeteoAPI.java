@@ -2,8 +2,10 @@ package external;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import entities.DailyData;
 import entities.Location;
 import entities.WeatherData;
+import entities.WeeklyData;
 import use_case.WeatherDataGateway;
 
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of WeatherService and WeatherDataGateway using the Open-Meteo APIs.
@@ -154,12 +158,39 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         );
     }
 
+    public WeeklyData getWeeklyData(Location location) {
+        String url = WEATHER_BASE
+                + "?latitude=" + location.getLatitude()
+                + "&longitude=" + location.getLongitude()
+                + "&daily=temperature_2m_min,temperature_2m_max,wind_speed_10m_max,"
+                + "precipitation_sum&timezone=auto";
+
+        String body = sendGet(url);
+        WeatherResponse response = gson.fromJson(body, WeatherResponse.class);
+        WeeklyData weeklyData = new WeeklyData();
+        List<String> times = response.daily.time;
+        List<Double> maxes = response.daily.temperatureMax;
+        List<Double> mins = response.daily.temperatureMin;
+        List<Double> precipitation = response.daily.precipitationSum;
+        List<Double> winds = response.daily.windSpeed;
+        for (int i = 0; i < times.size(); i++) {
+            String cond = describeWeatherCode(100);
+            DailyData dailyData = new DailyData(times.get(i), mins.get(i), maxes.get(i), cond,precipitation.get(i)>0, winds.get(i));
+            weeklyData.add(dailyData);
+        }
+        return weeklyData;
+    }
+
     // ===================== WeatherDataGateway method =====================
 
     @Override
     public WeatherData fetch(Location location) {
         // UC1 will likely call this via the gateway interface.
         return getWeather(location);
+    }
+
+    public WeeklyData weeklyFetch(Location location) {
+        return getWeeklyData(location);
     }
 
     // ===================== HTTP helper =====================
@@ -201,6 +232,7 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
 
     private static class WeatherResponse {
         Current current;
+        Daily daily;
     }
 
     private static class Current {
@@ -222,6 +254,23 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
 
         @SerializedName("weather_code")
         int weatherCode;
+    }
+
+    private static class Daily {
+        @SerializedName("time")
+        public List<String> time;
+
+        @SerializedName("temperature_2m_max")
+        public List<Double> temperatureMax;
+
+        @SerializedName("temperature_2m_min")
+        public List<Double> temperatureMin;
+
+        @SerializedName("precipitation_sum")
+        public List<Double> precipitationSum;
+
+        @SerializedName("wind_speed_10m_max")
+        public List<Double> windSpeed;
     }
 }
 
