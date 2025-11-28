@@ -175,7 +175,9 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         List<Double> winds = response.daily.windSpeed;
         for (int i = 0; i < times.size(); i++) {
             String cond = describeWeatherCode(100);
-            DailyData dailyData = new DailyData(times.get(i), mins.get(i), maxes.get(i), cond,precipitation.get(i)>0, winds.get(i));
+            DailyData dailyData = new DailyData(times.get(i), mins.get(i),
+                    maxes.get(i), cond,precipitation.get(i)>0,
+                    winds.get(i));
             weeklyData.add(dailyData);
         }
         return weeklyData;

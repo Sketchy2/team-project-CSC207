@@ -56,7 +56,7 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
 
     @Override
     public boolean existsByName(String cityName) {
-        if (cityName == null) return false;
+        if (cityName == null) {return false;}
         String trimmed = cityName.trim();
         return favorites.contains(trimmed);
     }
@@ -68,9 +68,9 @@ public class FileFavoriteLocationsGateway implements FavoriteLocationsGateway {
 
     @Override
     public boolean saveFavorites(String cityName) {
-        if (cityName == null) return false;
+        if (cityName == null) {return false;}
         String trimmed = cityName.trim();
-        if (trimmed.isEmpty()) return false;
+        if (trimmed.isEmpty()) {return false;}
 
         if (!favorites.contains(trimmed)) {
             favorites.add(trimmed);

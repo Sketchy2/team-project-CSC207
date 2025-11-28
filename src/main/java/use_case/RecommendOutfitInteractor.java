@@ -77,13 +77,13 @@ public class RecommendOutfitInteractor implements RecommendOutfitInputBoundary {
 
         if (raining) {
             items.add("outerwear: Waterproof jacket");
-            if (rationale.length() > 0) rationale.append(" + ");
+            if (rationale.length() > 0) {rationale.append(" + ");}
             rationale.append("Rain: waterproof layer");
         }
 
         if (windSpeed >= 30) {
             items.add("outerwear: Windbreaker");
-            if (rationale.length() > 0) rationale.append(" + ");
+            if (rationale.length() > 0) {rationale.append(" + ");}
             rationale.append("Windy: add windbreaker");
         }
 

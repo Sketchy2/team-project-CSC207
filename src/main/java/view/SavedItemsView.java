@@ -89,7 +89,12 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
         // Custom renderer to display outfit details
         outfitsList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            public Component getListCellRendererComponent(JList<?> list,
+                                                          Object value,
+                                                          int index,
+                                                          boolean isSelected,
+                                                          boolean cellHasFocus)
+            {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof Outfit) {
                     Outfit o = (Outfit) value;
@@ -149,7 +154,8 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
                     true  // overwrite existing
             );
 
-            if (saveOutfitViewModel.getError() != null && !saveOutfitViewModel.getError().isEmpty()) {
+            if (saveOutfitViewModel.getError() != null &&
+                    !saveOutfitViewModel.getError().isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                         saveOutfitViewModel.getError(),
                         "Error",
@@ -185,7 +191,7 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.WARNING_MESSAGE
             );
-            if (confirm != JOptionPane.OK_OPTION) return;
+            if (confirm != JOptionPane.OK_OPTION) {return;}
 
             // call delete use case
             deleteOutfitController.deleteOutfit(
