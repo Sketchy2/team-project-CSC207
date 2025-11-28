@@ -1,15 +1,10 @@
-package use_case;
+package use_case.delete;
 
 import data_access.InMemoryOutfitsGateway;
 import entities.Outfit;
-import use_case.delete.DeleteOutfitInteractor;
-import use_case.delete.DeleteOutfitInputData;
-import use_case.delete.DeleteOutfitOutputBoundary;
-import use_case.delete.DeleteOutfitOutputData;
 
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
