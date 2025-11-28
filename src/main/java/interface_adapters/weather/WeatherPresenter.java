@@ -72,12 +72,12 @@ public class WeatherPresenter implements GetWeatherOutputBoundary {
 
     // Helper to turn "tORONTo" into "Toronto"
     private String toTitleCase(String raw) {
-        if (raw == null || raw.isEmpty()) return "";
+        if (raw == null || raw.isEmpty()) {return "";}
         String lower = raw.toLowerCase().trim();
         String[] parts = lower.split("\\s+");
         StringBuilder sb = new StringBuilder();
         for (String p : parts) {
-            if (p.isEmpty()) continue;
+            if (p.isEmpty()) {continue;}
             sb.append(Character.toUpperCase(p.charAt(0)));
             if (p.length() > 1) {
                 sb.append(p.substring(1));

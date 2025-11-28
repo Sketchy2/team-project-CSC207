@@ -8,7 +8,8 @@ public class DailyData {
     private final boolean precipitation;
     private final double wind;
 
-    public DailyData(String date, double minTemp, double maxTemp, String condition, boolean precipitation, double wind) {
+    public DailyData(String date, double minTemp, double maxTemp,
+                     String condition, boolean precipitation, double wind) {
         this.date = date;
         this.minTemp = minTemp;
         this.maxTemp = maxTemp;

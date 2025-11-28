@@ -55,7 +55,8 @@ public class RecommendationViewModel {
      * Sets the list of recommended items.
      * @param items the list of items, or empty list if null
      */
-    public void setItems(List<String> items) { this.items = (items == null) ? new ArrayList<>() : new ArrayList<>(items);}
+    public void setItems(List<String> items) { this.items = (items == null) ?
+            new ArrayList<>() : new ArrayList<>(items);}
 
     /**
      * Sets the explanation for the recommendation.

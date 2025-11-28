@@ -18,48 +18,70 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             // 1. Data Access / Services
             WeatherService weatherService = new OpenMeteoAPI();
-            WeatherDataGateway weatherGateway = new OpenMeteoWeatherDataGateway(weatherService);
+            WeatherDataGateway weatherGateway =
+                    new OpenMeteoWeatherDataGateway(weatherService);
 
-            FavoriteLocationsGateway favLocGateway = new FileFavoriteLocationsGateway("favorites.json");
-            OutfitsGateway outfitsGateway = new FileOutfitsGateway("outfits.json");
+            FavoriteLocationsGateway favLocGateway =
+                    new FileFavoriteLocationsGateway("favorites.json");
+            OutfitsGateway outfitsGateway =
+                    new FileOutfitsGateway("outfits.json");
 
             // 2. ViewModels
             WeatherViewModel weatherViewModel = new WeatherViewModel();
-            RecommendationViewModel recommendationViewModel = new RecommendationViewModel();
+            RecommendationViewModel recommendationViewModel =
+                    new RecommendationViewModel();
             SavedItemsViewModel savedItemsViewModel = new SavedItemsViewModel();
             SaveOutfitViewModel saveOutfitViewModel = new SaveOutfitViewModel();
-            FavoriteLocationsViewModel favLocViewModel = new FavoriteLocationsViewModel();
+            FavoriteLocationsViewModel favLocViewModel =
+                    new FavoriteLocationsViewModel();
 
             // 3. Presenters
-            WeatherPresenter weatherPresenter = new WeatherPresenter(weatherViewModel);
-            RecommendationPresenter recommendationPresenter = new RecommendationPresenter(recommendationViewModel);
+            WeatherPresenter weatherPresenter =
+                    new WeatherPresenter(weatherViewModel);
+            RecommendationPresenter recommendationPresenter =
+                    new RecommendationPresenter(recommendationViewModel);
 
-            SavedItemsPresenter savedItemsPresenter = new SavedItemsPresenter(savedItemsViewModel);
-            SaveOutfitPresenter saveOutfitPresenter = new SaveOutfitPresenter(saveOutfitViewModel);
+            SavedItemsPresenter savedItemsPresenter =
+                    new SavedItemsPresenter(savedItemsViewModel);
+            SaveOutfitPresenter saveOutfitPresenter =
+                    new SaveOutfitPresenter(saveOutfitViewModel);
 
-            SaveFavoriteLocationPresenter saveFavPresenter = new SaveFavoriteLocationPresenter(favLocViewModel);
-            DeleteFavoriteLocationPresenter deleteFavPresenter = new DeleteFavoriteLocationPresenter(favLocViewModel);
-            EditFavoriteLocationPresenter editFavPresenter = new EditFavoriteLocationPresenter(savedItemsViewModel);
+            SaveFavoriteLocationPresenter saveFavPresenter =
+                    new SaveFavoriteLocationPresenter(favLocViewModel);
+            DeleteFavoriteLocationPresenter deleteFavPresenter =
+                    new DeleteFavoriteLocationPresenter(favLocViewModel);
+            EditFavoriteLocationPresenter editFavPresenter =
+                    new EditFavoriteLocationPresenter(savedItemsViewModel);
 
             // 4. Interactors
-            GetWeatherInputBoundary getWeatherInteractor = new GetWeatherInteractor(weatherGateway, weatherPresenter);
-            RecommendOutfitInputBoundary recommendOutfitInteractor = new RecommendOutfitInteractor(recommendationPresenter);
+            GetWeatherInputBoundary getWeatherInteractor =
+                    new GetWeatherInteractor(weatherGateway, weatherPresenter);
+            RecommendOutfitInputBoundary recommendOutfitInteractor =
+                    new RecommendOutfitInteractor(recommendationPresenter);
 
-            SaveOutfitInputBoundary saveOutfitInteractor = new SaveOutfitInteractor(outfitsGateway, saveOutfitPresenter);
-            DeleteOutfitInputBoundary deleteOutfitInteractor = new DeleteOutfitInteractor(outfitsGateway, savedItemsPresenter);
+            SaveOutfitInputBoundary saveOutfitInteractor =
+                    new SaveOutfitInteractor(outfitsGateway, saveOutfitPresenter);
+            DeleteOutfitInputBoundary deleteOutfitInteractor =
+                    new DeleteOutfitInteractor(outfitsGateway, savedItemsPresenter);
 
-            SaveFavoriteLocationInputBoundary saveFavInteractor = new SaveFavoriteLocationInteractor(favLocGateway, saveFavPresenter);
-            DeleteFavoriteLocationInputBoundary deleteFavInteractor = new DeleteFavoriteLocationInteractor(favLocGateway, deleteFavPresenter);
-            EditFavoriteLocationInputBoundary editFavInteractor = new EditFavoriteLocationInteractor(favLocGateway, editFavPresenter);
-            ViewSavedItemsInputBoundary viewSavedInteractor = new ViewSavedItemsInteractor(outfitsGateway, favLocGateway, savedItemsPresenter);
+            SaveFavoriteLocationInputBoundary saveFavInteractor =
+                    new SaveFavoriteLocationInteractor(favLocGateway, saveFavPresenter);
+            DeleteFavoriteLocationInputBoundary deleteFavInteractor =
+                    new DeleteFavoriteLocationInteractor(favLocGateway, deleteFavPresenter);
+            EditFavoriteLocationInputBoundary editFavInteractor =
+                    new EditFavoriteLocationInteractor(favLocGateway, editFavPresenter);
+            ViewSavedItemsInputBoundary viewSavedInteractor =
+                    new ViewSavedItemsInteractor(outfitsGateway, favLocGateway, savedItemsPresenter);
 
             // 5. Controllers
             GetWeatherController getWeatherController = new GetWeatherController(getWeatherInteractor);
-            RecommendOutfitController recommendOutfitController = new RecommendOutfitController(recommendOutfitInteractor);
+            RecommendOutfitController recommendOutfitController =
+                    new RecommendOutfitController(recommendOutfitInteractor);
             SaveOutfitController saveOutfitController = new SaveOutfitController(saveOutfitInteractor);
             DeleteOutfitController deleteOutfitController = new DeleteOutfitController(deleteOutfitInteractor);
 
-            FavoriteLocationsController favLocController = new FavoriteLocationsController(saveFavInteractor, deleteFavInteractor);
+            FavoriteLocationsController favLocController =
+                    new FavoriteLocationsController(saveFavInteractor, deleteFavInteractor);
             EditFavoriteLocationController editFavController = new EditFavoriteLocationController(editFavInteractor);
             SavedItemsController savedItemsController = new SavedItemsController(viewSavedInteractor);
 
