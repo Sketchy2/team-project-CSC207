@@ -1,7 +1,8 @@
 # CSC207 Team Contract
 
 ## Purpose
-We set shared expectations for how we will collaborate throughout CSC207. This promotes accountability, professionalism, and mutual support across prep work, RATs, in-class activities, and our course project.
+We set shared expectations for how we will collaborate throughout CSC207. This promotes accountability, professionalism,
+and mutual support across prep work, RATs, in-class activities, and our course project.
 
 ---
 
@@ -38,7 +39,8 @@ We set shared expectations for how we will collaborate throughout CSC207. This p
 ## Decision Making
 - Discuss options, trade-offs, and constraints openly.
 - **Default rule:** **Majority vote** after everyone is heard.
-- **High-impact decisions** (architecture, scope changes): strive for **consensus**; if not feasible, document rationale and proceed by majority.
+- **High-impact decisions** (architecture, scope changes): strive for **consensus**; if not feasible, document rationale
+- and proceed by majority.
 
 ---
 
@@ -67,7 +69,8 @@ We set shared expectations for how we will collaborate throughout CSC207. This p
 ---
 
 ## Revision Clause
-This contract may be updated by **unanimous agreement** if team needs evolve. Changes must be recorded in this file and noted in Discord.
+This contract may be updated by **unanimous agreement** if team needs evolve. Changes must be recorded in this file and
+noted in Discord.
 
 ---
 
