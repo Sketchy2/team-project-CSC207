@@ -29,7 +29,7 @@ public class GetWeatherInteractor implements GetWeatherInputBoundary {
 
             GetWeatherOutputData output = new GetWeatherOutputData(
                     inputData.getName(),               // cityName
-                    inputData.getCountryCode(),        // countryCode
+                    data.getCountryCode(),        // countryCode
                     data.getTemperature(),             // temperature
                     data.getFeelsLike(),               // feelsLike
                     data.getHumidityPercentage(),      // humidity
@@ -43,10 +43,9 @@ public class GetWeatherInteractor implements GetWeatherInputBoundary {
 
         } catch (Exception e) {
 
-            // FAILURE case: could not fetch weather (invalid city, API error, etc.)
             GetWeatherOutputData output = new GetWeatherOutputData(
                     inputData.getName(),
-                    inputData.getCountryCode(),
+                    "",
                     0,
                     0,
                     0,

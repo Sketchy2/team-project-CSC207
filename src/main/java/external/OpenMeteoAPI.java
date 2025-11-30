@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import entities.Location;
 import entities.WeatherData;
-import use_case.WeatherDataGateway;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Implementation of WeatherService and WeatherDataGateway using the Open-Meteo APIs.
  */
-public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
+public class OpenMeteoAPI implements WeatherService {
 
     private static final String GEOCODING_BASE =
             "https://geocoding-api.open-meteo.com/v1/search";
@@ -27,7 +26,6 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
-    // ===================== WeatherService methods =====================
 
     @Override
     public Location searchLocation(String cityName) {
@@ -47,7 +45,6 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
 
         GeoResult r = response.results[0];
 
-        // Location(name, countryCode, latitude, longitude)
         return new Location(
                 r.name,
                 r.countryCode,
@@ -140,9 +137,9 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         double humidity = c.relativeHumidity;
         double windSpeed = c.windSpeed;
         boolean isRaining = c.precipitation > 0.0;
+        String countryCode = location.getCountryCode();
 
-        // WeatherData(temperature, feelsLike, humidityPercentage, windSpeed, condition, isRaining)
-        String condition = describeWeatherCode(c.weatherCode);  // non-empty to satisfy your validation
+        String condition = describeWeatherCode(c.weatherCode);
 
         return new WeatherData(
                 temperature,
@@ -150,19 +147,11 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
                 humidity,
                 windSpeed,
                 condition,
-                isRaining
+                isRaining,
+                countryCode
         );
     }
 
-    // ===================== WeatherDataGateway method =====================
-
-    @Override
-    public WeatherData fetch(Location location) {
-        // UC1 will likely call this via the gateway interface.
-        return getWeather(location);
-    }
-
-    // ===================== HTTP helper =====================
 
     private String sendGet(String url) {
         try {
@@ -185,7 +174,6 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         }
     }
 
-    // ===================== DTOs for JSON mapping =====================
 
     private static class GeocodingResponse {
         GeoResult[] results;

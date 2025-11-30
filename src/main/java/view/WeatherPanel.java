@@ -67,10 +67,8 @@ public class WeatherPanel extends JPanel {
         double lat = 0.0;
         double lon = 0.0;
 
-        // 1) Call the use case through the controller
         controller.execute(city, countryCode, lat, lon);
 
-        // 2) Read state set by the presenter in the ViewModel
         WeatherViewModel.State s = viewModel.getState();
 
         if (!s.errorMessage.isEmpty()) {
@@ -118,7 +116,7 @@ public class WeatherPanel extends JPanel {
                     new GetWeatherController(interactor);
 
             // --- Swing View ---
-            JFrame frame = new JFrame("Weather2Wear - UC1 Demo");
+            JFrame frame = new JFrame("Weather2Wear");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setContentPane(new WeatherPanel(controller, viewModel));
             frame.pack();

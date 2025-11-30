@@ -5,9 +5,6 @@ import entities.WeatherData;
 import external.WeatherService;
 import use_case.WeatherDataGateway;
 
-/**
- * Real implementation of WeatherDataGateway using OpenMeteo via WeatherService.
- */
 public class OpenMeteoWeatherDataGateway implements WeatherDataGateway {
 
     private final WeatherService weatherService;
@@ -18,8 +15,11 @@ public class OpenMeteoWeatherDataGateway implements WeatherDataGateway {
 
     @Override
     public WeatherData fetch(Location location) {
-
         Location resolved = weatherService.searchLocation(location.getName());
-        return weatherService.getWeather(resolved);
+        WeatherData apiData = weatherService.getWeather(resolved);
+
+        // WeatherData already has the correct countryCode from getWeather
+        return apiData;
     }
 }
+

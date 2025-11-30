@@ -7,13 +7,15 @@ public class WeatherData {
     private final double windSpeed;
     private final String condition;
     private final boolean isRaining;
+    private final String countryCode;
 
     public WeatherData(double temperature,
                        double feelsLike,
                        double humidityPercentage,
                        double windSpeed,
                        String condition,
-                       boolean isRaining) {
+                       boolean isRaining,
+                       String countryCode) {
 
         if (humidityPercentage < 0 || humidityPercentage > 100) {
             throw new IllegalArgumentException("Humidity must be between 0 and 100");
@@ -31,6 +33,7 @@ public class WeatherData {
         this.windSpeed = windSpeed;
         this.condition = condition.trim();
         this.isRaining = isRaining;
+        this.countryCode = countryCode;
     }
 
     public double getTemperature() {
@@ -55,6 +58,9 @@ public class WeatherData {
 
     public boolean isRaining() {
         return isRaining;
+    }
+    public String getCountryCode() {
+        return countryCode;
     }
 
     @Override

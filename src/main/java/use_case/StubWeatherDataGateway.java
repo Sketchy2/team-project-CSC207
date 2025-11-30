@@ -14,7 +14,8 @@ public class StubWeatherDataGateway implements WeatherDataGateway {
                 65.0,       // humidityPercentage
                 3.2,        // windSpeed
                 "Light Rain",
-                true        // isRaining
+                true,
+                location.getCountryCode()// isRaining
         );
     }
 }
