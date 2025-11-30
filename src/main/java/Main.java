@@ -16,7 +16,7 @@ import java.awt.*;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // 1. Data Access / Services
+            // 1. Data Access / Services (Gateways(API + Persistence))
             WeatherService weatherService = new OpenMeteoAPI();
             WeatherDataGateway weatherGateway =
                     new OpenMeteoWeatherDataGateway(weatherService);
@@ -125,9 +125,11 @@ public class Main {
             JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JButton viewSavedButton = new JButton("View Saved Items");
             JButton saveLocationButton = new JButton("Save Location");
+            JButton saveOutfitButton = new JButton("Save Outfit");
 
             topBar.add(viewSavedButton);
             topBar.add(saveLocationButton);
+            topBar.add(saveOutfitButton);
             dashboardPanel.add(topBar, BorderLayout.NORTH);
 
             // Split Pane
@@ -176,10 +178,55 @@ public class Main {
                 favLocController.save(name, "CA", 0.0, 0.0);
                 JOptionPane.showMessageDialog(frame, "Location saved: " + name);
             });
+            saveOutfitButton.addActionListener(e -> {
+
+                JTextField nameField = new JTextField(15);
+                JTextField itemsField = new JTextField(25);
+                JTextField weatherField = new JTextField(15);
+                JTextField locationField = new JTextField(15);
+                JCheckBox overwriteBox = new JCheckBox("Overwrite if duplicate");
+
+                JPanel panel = new JPanel(new GridLayout(5, 2));
+                panel.add(new JLabel("Name:"));
+                panel.add(nameField);
+                panel.add(new JLabel("Items (comma separated):"));
+                panel.add(itemsField);
+                panel.add(new JLabel("Weather Profile:"));
+                panel.add(weatherField);
+                panel.add(new JLabel("Location:"));
+                panel.add(locationField);
+                panel.add(new JLabel(""));
+                panel.add(overwriteBox);
+
+                int result = JOptionPane.showConfirmDialog(
+                        frame, panel, "Save Outfit",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (result == JOptionPane.OK_OPTION) {
+                    saveOutfitController.save(
+                            nameField.getText(),
+                            itemsField.getText(),
+                            weatherField.getText(),
+                            locationField.getText(),
+                            overwriteBox.isSelected()
+                    );
+
+                    if (!saveOutfitViewModel.getError().isEmpty()) {
+                        JOptionPane.showMessageDialog(frame,
+                                saveOutfitViewModel.getError(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(frame,
+                                saveOutfitViewModel.getMessage(),
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            });
 
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
     }
 }
-
