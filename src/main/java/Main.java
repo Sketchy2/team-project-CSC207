@@ -52,6 +52,8 @@ public class Main {
                     new DeleteFavoriteLocationPresenter(favLocViewModel);
             EditFavoriteLocationPresenter editFavPresenter =
                     new EditFavoriteLocationPresenter(savedItemsViewModel);
+            SavedItemsDeleteFavoriteLocationPresenter savedItemsDeleteFavPresenter =
+                    new SavedItemsDeleteFavoriteLocationPresenter(savedItemsViewModel);
 
             // 4. Interactors
             GetWeatherInputBoundary getWeatherInteractor =
@@ -68,6 +70,8 @@ public class Main {
                     new SaveFavoriteLocationInteractor(favLocGateway, saveFavPresenter);
             DeleteFavoriteLocationInputBoundary deleteFavInteractor =
                     new DeleteFavoriteLocationInteractor(favLocGateway, deleteFavPresenter);
+            DeleteFavoriteLocationInputBoundary deleteFavSavedItemsInteractor =
+                    new DeleteFavoriteLocationInteractor(favLocGateway, savedItemsDeleteFavPresenter);
             EditFavoriteLocationInputBoundary editFavInteractor =
                     new EditFavoriteLocationInteractor(favLocGateway, editFavPresenter);
             ViewSavedItemsInputBoundary viewSavedInteractor =
@@ -79,6 +83,8 @@ public class Main {
                     new RecommendOutfitController(recommendOutfitInteractor);
             SaveOutfitController saveOutfitController = new SaveOutfitController(saveOutfitInteractor);
             DeleteOutfitController deleteOutfitController = new DeleteOutfitController(deleteOutfitInteractor);
+            DeleteFavoriteLocationController deleteFavoriteLocationController =
+                    new DeleteFavoriteLocationController(deleteFavSavedItemsInteractor);
 
             FavoriteLocationsController favLocController =
                     new FavoriteLocationsController(saveFavInteractor, deleteFavInteractor);
@@ -103,10 +109,13 @@ public class Main {
             SavedItemsView savedItemsView = new SavedItemsView(
                     savedItemsController,
                     editFavController,
+                    deleteFavoriteLocationController,
                     saveOutfitController,
                     deleteOutfitController,
                     savedItemsViewModel,
-                    saveOutfitViewModel
+                    saveOutfitViewModel,
+                    getWeatherController,
+                    weatherViewModel
             );
 
             // 7. Main Frame Wiring

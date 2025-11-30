@@ -1,15 +1,21 @@
 package view;
 
 import entities.Outfit;
+import interface_adapters.DeleteFavoriteLocationController;
+import interface_adapters.DeleteOutfitController;
 import interface_adapters.EditFavoriteLocationController;
 import interface_adapters.SavedItemsController;
 import interface_adapters.SavedItemsViewModel;
 import interface_adapters.SaveOutfitController;
 import interface_adapters.SaveOutfitViewModel;
-import interface_adapters.DeleteOutfitController;
+import interface_adapters.weather.GetWeatherController;
+import interface_adapters.weather.WeatherViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -26,10 +32,13 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
 
     public SavedItemsView(SavedItemsController controller,
                           EditFavoriteLocationController editLocationController,
+                          DeleteFavoriteLocationController deleteFavoriteLocationController,
                           SaveOutfitController saveOutfitController,
                           DeleteOutfitController deleteOutfitController,
                           SavedItemsViewModel savedItemsViewModel,
-                          SaveOutfitViewModel saveOutfitViewModel) {
+                          SaveOutfitViewModel saveOutfitViewModel,
+                          GetWeatherController getWeatherController,
+                          WeatherViewModel weatherViewModel) {
 
         this.savedItemsViewModel = savedItemsViewModel;
         this.savedItemsViewModel.addPropertyChangeListener(this);
@@ -39,6 +48,61 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
         // ---------- Favourite locations list + rename ----------
 
         JList<String> favoritesList = new JList<>(favoritesModel);
+        favoritesList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                    String selected = favoritesList.getSelectedValue();
+                    if (selected == null || selected.isEmpty()) {
+                        return;
+                    }
+
+                    String cityName = selected;
+                    String countryCode = "CA";
+                    if (selected.contains("(") && selected.endsWith(")")) {
+                        int idx = selected.lastIndexOf("(");
+                        if (idx > 0) {
+                            cityName = selected.substring(0, idx).trim();
+                            countryCode = selected.substring(idx + 1, selected.length() - 1).trim();
+                            if (countryCode.isEmpty()) {
+                                countryCode = "CA";
+                            }
+                        }
+                    }
+
+                    getWeatherController.execute(cityName, countryCode, 0.0, 0.0);
+                    WeatherViewModel.State state = weatherViewModel.getState();
+
+                    if (!state.errorMessage.isEmpty()) {
+                        JOptionPane.showMessageDialog(SavedItemsView.this,
+                                state.errorMessage,
+                                "Weather error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("City: ").append(state.cityName).append("\n");
+                    sb.append("Temperature: ").append(state.temperatureText).append("\n");
+                    sb.append("Feels like: ").append(state.feelsLikeText).append("\n");
+                    sb.append("Humidity: ").append(state.humidityText).append("\n");
+                    sb.append("Wind speed: ").append(state.windSpeedText).append("\n");
+                    sb.append("Condition: ").append(state.descriptionText).append("\n");
+
+                    if (state.weeklyForecast != null && !state.weeklyForecast.isEmpty()) {
+                        sb.append("\nWeekly forecast:\n");
+                        for (String entry : state.weeklyForecast) {
+                            sb.append(" - ").append(entry).append("\n");
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(SavedItemsView.this,
+                            sb.toString(),
+                            "Current Weather",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
         JScrollPane favoritesScroll = new JScrollPane(favoritesList);
 
         JButton renameBtn = new JButton("Rename selected city");
@@ -78,10 +142,55 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
+        JButton deleteFavoriteBtn = new JButton("Delete selected city");
+        deleteFavoriteBtn.addActionListener(e -> {
+            String selected = favoritesList.getSelectedValue();
+            if (selected == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a city to delete.",
+                        "No selection",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Remove " + selected + " from favourites?",
+                    "Confirm delete",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (confirm != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            deleteFavoriteLocationController.delete(selected);
+
+            if (!savedItemsViewModel.getError().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        savedItemsViewModel.getError(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String message = savedItemsViewModel.getMessage().isEmpty()
+                    ? "Location removed."
+                    : savedItemsViewModel.getMessage();
+
+            JOptionPane.showMessageDialog(this,
+                    message,
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
+
         JPanel favoritesPanel = new JPanel(new BorderLayout());
         favoritesPanel.add(new JLabel("Favourite Locations:"), BorderLayout.NORTH);
         favoritesPanel.add(favoritesScroll, BorderLayout.CENTER);
-        favoritesPanel.add(renameBtn, BorderLayout.SOUTH);
+        JPanel favoritesButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        favoritesButtons.add(renameBtn);
+        favoritesButtons.add(deleteFavoriteBtn);
+        favoritesPanel.add(favoritesButtons, BorderLayout.SOUTH);
 
         // ---------- Outfits list + edit ----------
 
@@ -233,22 +342,20 @@ public class SavedItemsView extends JPanel implements PropertyChangeListener {
         output.setEditable(false);
         JScrollPane outputScroll = new JScrollPane(output);
 
-        // ---------- Top: refresh button ----------
-
-        JButton refreshBtn = new JButton("Load saved items");
-        refreshBtn.addActionListener(e -> {
-            controller.loadSavedItems();
-        });
-
         // ---------- Layout ----------
 
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(favoritesPanel, BorderLayout.NORTH);
         leftPanel.add(outfitsPanel, BorderLayout.CENTER);
 
-        add(refreshBtn, BorderLayout.NORTH);
         add(leftPanel, BorderLayout.WEST);
         add(outputScroll, BorderLayout.CENTER);
+
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && isShowing()) {
+                controller.loadSavedItems();
+            }
+        });
     }
 
     @Override
