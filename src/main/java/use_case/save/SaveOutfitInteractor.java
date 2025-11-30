@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Contains the business logic for saving an outfit.
+ * Performs validation, duplicate checking, normalization,
+ * and delegates persistence to the data access gateway.
  */
 public class SaveOutfitInteractor implements SaveOutfitInputBoundary {
 
@@ -22,41 +24,60 @@ public class SaveOutfitInteractor implements SaveOutfitInputBoundary {
     @Override
     public void execute(SaveOutfitInputData data) {
 
-        // 1. Validate
-        if (data.getName() == null || data.getName().isBlank()) {
+        // -----------------------------
+        // 1. Normalize input fields
+        // -----------------------------
+        String name = data.getName() == null ? "" : data.getName().trim();
+        String profile = data.getWeatherProfile() == null ?
+                "" : data.getWeatherProfile().trim();
+        String location = data.getLocation() == null ?
+                "" : data.getLocation().trim();
+
+        // -----------------------------
+        // 2. Validate fields
+        // -----------------------------
+        if (name.isBlank()) {
             presenter.prepareFailView("Name cannot be empty.");
             return;
         }
-        if (data.getItems().isEmpty()) {
+
+        if (data.getItems() == null || data.getItems().isEmpty()) {
             presenter.prepareFailView("Outfit must include at least one item.");
             return;
         }
 
-        // 2. Check duplicates
-        boolean exists = gateway.exists(
-                data.getName(),
-                data.getWeatherProfile(),
-                data.getLocation()
-        );
+        // -----------------------------
+        // 3. Duplicate detection
+        // -----------------------------
+        boolean exists = gateway.exists(name, profile, location);
 
         if (exists && !data.isOverwrite()) {
             presenter.prepareFailView("An identical outfit already exists.");
             return;
         }
 
-        // 3. Save entity
+        // -----------------------------
+        // 4. Save entity
+        // -----------------------------
         Outfit outfit = new Outfit(
-                data.getName(),
+                name,
                 data.getItems(),
-                data.getWeatherProfile(),
-                data.getLocation()
+                profile,
+                location
         );
 
         gateway.save(outfit);
 
-        // 4. Prepare output
+        // -----------------------------
+        // 5. Prepare response for UI
+        // -----------------------------
         List<Outfit> all = gateway.getAll();
-        SaveOutfitOutputData output = new SaveOutfitOutputData(all, "Outfit saved successfully!");
+
+        SaveOutfitOutputData output = new SaveOutfitOutputData(
+                all,
+                "Outfit saved successfully!"
+        );
+
         presenter.prepareSuccessView(output);
     }
 }
