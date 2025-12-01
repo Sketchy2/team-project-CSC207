@@ -163,7 +163,7 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
                 + "?latitude=" + location.getLatitude()
                 + "&longitude=" + location.getLongitude()
                 + "&daily=temperature_2m_min,temperature_2m_max,wind_speed_10m_max,"
-                + "precipitation_sum&timezone=auto";
+                + "precipitation_sum,weather_code&timezone=auto";
 
         String body = sendGet(url);
         WeatherResponse response = gson.fromJson(body, WeatherResponse.class);
@@ -173,8 +173,9 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
         List<Double> mins = response.daily.temperatureMin;
         List<Double> precipitation = response.daily.precipitationSum;
         List<Double> winds = response.daily.windSpeed;
+        List<Integer> codes = response.daily.weatherCode;
         for (int i = 0; i < times.size(); i++) {
-            String cond = describeWeatherCode(100);
+            String cond = describeWeatherCode(codes.get(i));
             DailyData dailyData = new DailyData(times.get(i), mins.get(i),
                     maxes.get(i), cond,precipitation.get(i)>0,
                     winds.get(i));
@@ -274,5 +275,8 @@ public class OpenMeteoAPI implements WeatherService, WeatherDataGateway {
 
         @SerializedName("wind_speed_10m_max")
         public List<Double> windSpeed;
+
+        @SerializedName("weather_code")
+        public List<Integer> weatherCode;
     }
 }

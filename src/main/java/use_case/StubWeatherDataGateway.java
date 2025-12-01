@@ -7,6 +7,11 @@ import entities.WeeklyData;
 public class StubWeatherDataGateway implements WeatherDataGateway {
 
     @Override
+    public Location searchLocation(String cityName) {
+        return new Location(cityName, "XX", 0.0, 0.0);
+    }
+
+    @Override
     public WeatherData fetch(Location location) {
         // Temporary hard-coded stub for testing UC1
         return new WeatherData(
