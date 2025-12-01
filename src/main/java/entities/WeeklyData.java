@@ -15,4 +15,9 @@ public class WeeklyData {
     public void add(DailyData dailyData) {
         weeklyForecast.add(dailyData);
     }
+
+    @Override
+    public String toString() {
+        return "WeeklyData{" + "weeklyForecast=" + weeklyForecast + '}';
+    }
 }

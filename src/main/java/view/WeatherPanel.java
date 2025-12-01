@@ -92,6 +92,8 @@ public class WeatherPanel extends JPanel {
         sb.append("Wind speed: ").append(s.windSpeedText).append("\n");
         sb.append("Condition: ").append(s.descriptionText).append("\n");
 
+        sb.append("Weekly Forecast: ").append(s.weeklyForecast);
+
         outputArea.setText(sb.toString());
     }
 

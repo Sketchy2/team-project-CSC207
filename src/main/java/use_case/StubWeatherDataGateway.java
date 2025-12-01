@@ -1,8 +1,6 @@
 package use_case;
 
-import entities.Location;
-import entities.WeatherData;
-import entities.WeeklyData;
+import entities.*;
 
 public class StubWeatherDataGateway implements WeatherDataGateway {
 
@@ -21,7 +19,10 @@ public class StubWeatherDataGateway implements WeatherDataGateway {
 
     @Override
     public WeeklyData fetchWeekly(Location location) {
-        // Temporary stub return empty
-        return new WeeklyData();
+        // Temporary hard-coded stub for testing UC4
+        DailyData stub = new DailyData("2025-12-01", -5.9, -1.3, "0", false, 16.0);
+        WeeklyData temporaryStub = new WeeklyData();
+        temporaryStub.add(stub);
+        return temporaryStub;
     }
 }

@@ -48,7 +48,7 @@ public class DailyData {
                 "date=" + date +
                 ", minTemp=" + minTemp +
                 ", maxTemp=" + maxTemp +
-                ", condition='" + condition +
+                ", condition=" + condition +
                 ", precipitation=" + precipitation +
                 ", wind=" + wind +
                 '}';

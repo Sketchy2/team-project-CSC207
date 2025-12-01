@@ -46,11 +46,23 @@ public class WeatherPresenter implements GetWeatherOutputBoundary {
         // Populate Weekly Forecast
         state.weeklyForecast = new ArrayList<>();
         WeeklyData wd = outputData.getWeeklyData();
-        if (wd != null && wd.getWeeklyForecast() != null) {
+
+        if (wd == null || wd.getWeeklyForecast() == null) {
+            state.weeklyForecast.add("There is no weekly forecast available");
+        }
+
+        else if (wd.getWeeklyForecast() != null) {
             for (DailyData d : wd.getWeeklyForecast()) {
-                String entry = String.format("%s: Min %.1f°C | Max %.1f°C | %s",
-                        d.getDate(), d.getMinTemp(), d.getMaxTemp(), d.getCondition());
-                state.weeklyForecast.add(entry);
+                if (d.isPrecipitation()){
+                    String entry = String.format("\n %s: Min %.1f°C | Max %.1f°C | It will rain",
+                            d.getDate(), d.getMinTemp(), d.getMaxTemp());
+                    state.weeklyForecast.add(entry);
+                }
+                else{
+                    String entry = String.format("\n %s: Min %.1f°C | Max %.1f°C | It will not rain",
+                            d.getDate(), d.getMinTemp(), d.getMaxTemp());
+                    state.weeklyForecast.add(entry);
+                }
             }
         }
 

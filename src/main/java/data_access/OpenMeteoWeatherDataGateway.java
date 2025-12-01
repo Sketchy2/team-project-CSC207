@@ -1,5 +1,6 @@
 package data_access;
 
+import entities.DailyData;
 import entities.Location;
 import entities.WeatherData;
 import entities.WeeklyData;
