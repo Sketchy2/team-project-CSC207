@@ -170,4 +170,33 @@ class SaveOutfitInteractorTest {
         List<Outfit> stored = gateway.getAll();
         assertEquals(List.of("coat", "hat"), stored.get(0).getItems());
     }
+
+    @Test
+    void testSaveFailsWhenNameIsNull() {
+        InMemoryOutfitsGateway gateway = new InMemoryOutfitsGateway();
+
+        SaveOutfitOutputBoundary presenter = new SaveOutfitOutputBoundary() {
+            @Override
+            public void prepareSuccessView(SaveOutfitOutputData data) {
+                fail("Should not present success data when name is null");
+            }
+
+            @Override
+            public void prepareFailView(String errorMessage) {
+                assertEquals("Name cannot be empty.", errorMessage);
+            }
+        };
+
+        SaveOutfitInteractor interactor = new SaveOutfitInteractor(gateway, presenter);
+
+        SaveOutfitInputData inputData = new SaveOutfitInputData(
+                null,
+                List.of("Hat"),
+                "Cold",
+                "Toronto",
+                false  // overwrite
+        );
+
+        interactor.execute(inputData);
+    }
 }
