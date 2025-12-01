@@ -3,59 +3,67 @@
 A Weather & Wardrobe Recommendation Application  
 *Team TUT0101-11 – CSC207 Team Project*
 
+**Weather2Wear** is a smart application designed to help users decide what to wear based on real-time weather conditions. By integrating accurate weather forecasting with a personalized wardrobe manager, the app solves the daily problem of under-dressing or over-dressing for the weather.
 
-Please keep this up-to-date with information about your project throughout the term.
+**Core Features:**
+*   **Weather Search:** Instantly fetch current weather conditions for any city worldwide.
+*   **Intelligent Recommendations:** Receive outfit suggestions tailored to temperature, precipitation, and wind speed.
+*   **Multi-Day Forecast:** Plan ahead with a 7-day weather forecast including daily highs, lows, and conditions.
+*   **Wardrobe Management:** Save favorite outfits with their weather context and manage a list of favorite cities for quick access.
 
-The readme should include information such as:
-- a summary of what your application is all about
-- a list of the user stories, along with who is responsible for each one
-- information about the API(s) that your project uses 
-- screenshots or animations demonstrating current functionality
-
-By keeping this README up-to-date,
-your team will find it easier to prepare for the final presentation
-at the end of the term.
+---
 
 ## 👥 Team Members & Responsibilities
-Use Case Assignments:
-- Parker – Get current weather data (User Story #1)
-- Carl – Provide clothing recommendations (User Story #2)
-- Elizabeth – Save favourite location (User Story #3)
-- Ellen – View multi-day forecast (merged with UC1) (User Story #4)
-- Chengcheng – Save and view outfit preferences (User Story #5)
-- Mitchell – Manage saved outfits and locations (User Story #6)
+
+| Member | User Story | Responsibility |
+| :--- | :--- | :--- |
+| **Parker** | UC1 | **View Current Weather:** Fetch and display real-time weather data (temp, humidity, wind) for a searched city. |
+| **Carl** | UC2 | **Outfit Recommendation:** Generate specific clothing item suggestions based on weather thresholds. |
+| **Elizabeth** | UC3 | **Favorite Locations:** Implement saving, loading, and persistent storage of favorite cities. |
+| **Ellen** | UC4 | **Multi-Day Forecast:** Retrieve and display a 7-day weather forecast (integrated with UC1). |
+| **Chengcheng** | UC5 | **Save Outfits:** Allow users to save recommended outfits with associated weather metadata. |
+| **Mitchell** | UC6 | **Manage Saved Items:** Functionality to view, edit, and delete saved outfits and locations. |
 
 ---
 
 ## 📜 User Stories
 
 ### **UC1 – View Current Weather**
-*As a user, I want to search for a city and see the current weather so I know what to expect.*
+*As a user, I want to search for a city and see the current weather (temperature, humidity, wind speed, condition) so I know exactly what to expect before going outside.*
 
 ### **UC2 – Outfit Recommendation**
-*As a user, I want the system to recommend an outfit based on temperature and conditions.*
+*As a user, I want the system to recommend an appropriate outfit (e.g., "Heavy winter coat" vs. "T-shirt") based on the current temperature and weather conditions.*
 
 ### **UC3 – Favorite Locations**
-*As a user, I want to save favourite locations so I can check them quickly.*
+*As a user, I want to save my frequently visited cities so I can check their weather quickly without typing the name every time.*
 
 ### **UC4 – Multi-Day Forecast**
-*As a user, I want to see a multi-day forecast to decide future outfits.*
+*As a user, I want to see a weekly forecast (daily highs, lows, precipitation) to plan my outfits for the upcoming week.*
 
-### **UC5 – Save & Manage Favorite Outfits**
-*As a user, I want to save my favourite outfits (with weather profiles and location) and reuse them later.*
+### **UC5 – Save Favorite Outfits**
+*As a user, I want to save a recommended outfit along with its weather profile and location so I can remember what worked well for specific conditions.*
+
+### **UC6 – Manage Saved Items**
+*As a user, I want to view my list of saved outfits and locations, and edit or delete them as my preferences change.*
 
 ---
 
-## 🔌 External API: Open-Meteo
+## 🔌 APIs Used
 
-**Weather2Wear** uses the **Open-Meteo API** to fetch:
+We use the **Open-Meteo API** for all weather and location data. It requires no API key and provides high-precision data.
 
-- Current temperature
-- Feels like temperature
-- Humidity
-- Wind speed
-- Weather condition codes
-- Multi-day forecast
+### 1. **Geocoding API**
+*   **Endpoint:** `https://geocoding-api.open-meteo.com/v1/search`
+*   **Purpose:** Converts a user-entered city name (e.g., "London") into geographic coordinates (latitude, longitude) and resolves the correct country code (e.g., "GB").
+
+### 2. **Weather Forecast API**
+*   **Endpoint:** `https://api.open-meteo.com/v1/forecast`
+*   **Purpose:** Fetches detailed weather data using the coordinates from the Geocoding API.
+*   **Data Points Used:**
+    *   **Current:** `temperature_2m`, `apparent_temperature`, `relative_humidity_2m`, `wind_speed_10m`, `precipitation`, `weather_code`.
+    *   **Daily (Forecast):** `temperature_2m_max`, `temperature_2m_min`, `precipitation_sum`, `wind_speed_10m_max`, `weather_code`.
+
+---
 
 ## 🎬 Application Demo
 
