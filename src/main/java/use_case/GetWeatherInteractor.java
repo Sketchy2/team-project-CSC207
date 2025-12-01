@@ -18,41 +18,38 @@ public class GetWeatherInteractor implements GetWeatherInputBoundary {
     @Override
     public void execute(GetWeatherInputData inputData) {
 
-        Location location = new Location(
-                inputData.getName(),
-                inputData.getCountryCode(),
-                inputData.getLatitude(),
-                inputData.getLongitude()
-        );
-
         try {
-            // Fetch current weather
-            WeatherData data = weatherGateway.fetch(location);
+            // 1. Resolve the location first to get the correct country code (fixes "Always CA" bug)
+            // The inputData might have a dummy country code (e.g. "CA") from the view.
+            Location resolvedLocation = weatherGateway.searchLocation(inputData.getName());
 
-            // Fetch weekly forecast (UC4 integration)
-            WeeklyData weeklyData = weatherGateway.fetchWeekly(location);
+            // 2. Fetch current weather using the RESOLVED location
+            WeatherData data = weatherGateway.fetch(resolvedLocation);
+
+            // 3. Fetch weekly forecast (UC4 integration)
+            WeeklyData weeklyData = weatherGateway.fetchWeekly(resolvedLocation);
 
             GetWeatherOutputData output = new GetWeatherOutputData(
-                    inputData.getName(),               // cityName
-                    inputData.getCountryCode(),        // countryCode
-                    data.getTemperature(),             // temperature
-                    data.getFeelsLike(),               // feelsLike
-                    data.getHumidityPercentage(),      // humidity
-                    data.getWindSpeed(),               // windSpeed
-                    data.getCondition(),               // description
-                    data.isRaining(),                  // isRaining
-                    weeklyData,                        // weekly forecast
-                    ""                                 // errorMessage = none
+                    resolvedLocation.getName(),        // Use resolved city name
+                    resolvedLocation.getCountryCode(), // Use resolved country code (e.g. "AE")
+                    data.getTemperature(),
+                    data.getFeelsLike(),
+                    data.getHumidityPercentage(),
+                    data.getWindSpeed(),
+                    data.getCondition(),
+                    data.isRaining(),
+                    weeklyData,
+                    ""
             );
 
             presenter.present(output);
 
         } catch (Exception e) {
 
-            // FAILURE case: could not fetch weather (invalid city, API error, etc.)
+            // FAILURE case
             GetWeatherOutputData output = new GetWeatherOutputData(
                     inputData.getName(),
-                    inputData.getCountryCode(),
+                    inputData.getCountryCode(), // Fallback to input code on error
                     0,
                     0,
                     0,

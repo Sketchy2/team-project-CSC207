@@ -18,8 +18,14 @@ public class OpenMeteoWeatherDataGateway implements WeatherDataGateway {
     }
 
     @Override
-    public WeatherData fetch(Location location) {
+    public Location searchLocation(String cityName) {
+        return weatherService.searchLocation(cityName);
+    }
 
+    @Override
+    public WeatherData fetch(Location location) {
+        // We resolve the location again here or trust the caller.
+        // Existing logic resolved it. We keep it safe.
         Location resolved = weatherService.searchLocation(location.getName());
         return weatherService.getWeather(resolved);
     }
