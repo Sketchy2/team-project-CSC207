@@ -77,21 +77,12 @@ public class RecommendOutfitInteractor implements RecommendOutfitInputBoundary {
 
         if (raining) {
             items.add("outerwear: Waterproof jacket");
-            if (rationale.length() > 0) {rationale.append(" + ");}
-            rationale.append("Rain: waterproof layer");
+            rationale.append(" + Rain: waterproof layer");
         }
 
         if (windSpeed >= 30) {
             items.add("outerwear: Windbreaker");
-            if (rationale.length() > 0) {rationale.append(" + ");}
-            rationale.append("Windy: add windbreaker");
-        }
-
-        if (items.isEmpty()) {
-            items.add("top: T-shirt");
-            items.add("pants: Jeans or shorts");
-            items.add("footwear: Sneakers");
-            rationale.append("Default outfit: no specific weather data available");
+            rationale.append(" + Windy: add windbreaker");
         }
 
         RecommendOutfitOutputData outputData = new RecommendOutfitOutputData(
